@@ -8,9 +8,10 @@ from document_processor import DocumentProcessor
 from sse_starlette.sse import EventSourceResponse
 import asyncio
 import os
+from dotenv import load_dotenv
 
 app = FastAPI()
-
+load_dotenv()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
@@ -27,7 +28,7 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     try:
-        api_key = os.environ.get("OPENAI_API_KEY")
+        api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise HTTPException(status_code=500, detail="OpenAI API key not found in environment")
 
