@@ -16,9 +16,13 @@ class ChatProcessor:
 
     def _create_system_prompt(self) -> str:
         return """You are a helpful CDP (Customer Data Platform) support agent. You can answer questions about 
-        Segment, mParticle, Lytics, and Zeotap. Focus on providing clear, step-by-step instructions for how-to 
-        questions. If a question is not related to these CDPs, politely explain that you can only help with 
-        CDP-related queries. Base your answers on official documentation."""
+        Segment (https://segment.com/docs/?ref=nav), 
+        mParticle (https://docs.mparticle.com/), 
+        Lytics (https://docs.lytics.com/), and 
+        Zeotap (https://docs.zeotap.com/home/en-us/). 
+
+        Focus on providing clear, step-by-step instructions for how-to questions. If a question is not related 
+        to these CDPs, politely explain that you can only help with CDP-related queries."""
 
     async def get_streaming_response(
         self,
@@ -33,7 +37,7 @@ class ChatProcessor:
             for msg in conversation_history:
                 if msg["role"] == "user":
                     messages.append(HumanMessage(content=msg["content"]))
-                else:
+                elif msg["role"] == "assistant":
                     messages.append(SystemMessage(content=msg["content"]))
 
             # Add current message
@@ -44,13 +48,11 @@ class ChatProcessor:
             if context:
                 messages.append(SystemMessage(content=f"Relevant documentation: {context}"))
 
-            # Generate streaming response
-            async for chunk in await self.chat_model.astream(messages):
-                if hasattr(chunk, 'content') and chunk.content:
+            # Stream the response
+            async for chunk in self.chat_model.astream(messages):
+                if chunk.content:
                     yield chunk.content
-                elif isinstance(chunk, str):
-                    yield chunk
 
         except Exception as e:
             print(f"Error in chat processing: {str(e)}")
-            yield f"I apologize, but I encountered an error: {str(e)}"
+            yield f"I apologize, but I encountered an error while processing your request. Please try again."
