@@ -1,0 +1,51 @@
+/* Custom styling for the chat interface */
+.stTextInput>div>div>input {
+    border-radius: 20px;
+}
+
+.stButton>button {
+    border-radius: 20px;
+    background-color: #FF4B4B;
+    color: white;
+}
+
+.chat-message {
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-message {
+    background-color: #F0F2F6;
+    align-self: flex-end;
+}
+
+.assistant-message {
+    background-color: #FF4B4B15;
+    align-self: flex-start;
+}
+
+/* Sidebar styling */
+.sidebar .sidebar-content {
+    background-color: #F0F2F6;
+}
+
+/* Main content area */
+.main .block-container {
+    padding-top: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Header styling */
+h1, h2, h3 {
+    color: #262730;
+    font-weight: 600;
+}
+
+/* Error message styling */
+.stAlert {
+    border-radius: 0.5rem;
+}
