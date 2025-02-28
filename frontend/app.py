@@ -10,9 +10,9 @@ st.set_page_config(
     page_icon="💬",
     layout="wide",
     menu_items={
-        'About': None,
+        'Get help': None,
         'Report a bug': None,
-        'Get help': None
+        'About': None
     }
 )
 
