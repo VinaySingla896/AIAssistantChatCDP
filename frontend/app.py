@@ -3,6 +3,7 @@ import requests
 import json
 import sseclient
 import time
+import os
 
 st.set_page_config(
     page_title="CDP Support Chatbot",
@@ -17,21 +18,10 @@ with open("frontend/styles.css") as f:
 def initialize_session_state():
     if "messages" not in st.session_state:
         st.session_state.messages = []
-    if "api_key" not in st.session_state:
-        st.session_state.api_key = ""
 
 initialize_session_state()
 
 st.title("CDP Support Chatbot")
-
-# Sidebar for API key
-with st.sidebar:
-    st.header("Configuration")
-    api_key = st.text_input("Enter your OpenAI API key:", 
-                           type="password",
-                           value=st.session_state.api_key)
-    if api_key:
-        st.session_state.api_key = api_key
 
 # Main chat interface
 st.markdown("### Chat with your CDP Assistant")
@@ -44,42 +34,38 @@ for message in st.session_state.messages:
 
 # Chat input
 if prompt := st.chat_input("Type your question here..."):
-    if not st.session_state.api_key:
-        st.error("Please enter your OpenAI API key in the sidebar.")
-    else:
-        # Add user message to chat
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+    # Add user message to chat
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-        # Create assistant message placeholder
-        with st.chat_message("assistant"):
-            message_placeholder = st.empty()
-            full_response = ""
+    # Create assistant message placeholder
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        full_response = ""
 
-            try:
-                # Send request to backend
-                response = requests.post(
-                    "http://localhost:8000/chat",
-                    json={
-                        "message": prompt,
-                        "api_key": st.session_state.api_key,
-                        "conversation_history": st.session_state.messages[:-1]
-                    },
-                    stream=True
-                )
+        try:
+            # Send request to backend
+            response = requests.post(
+                "http://localhost:8000/chat",
+                json={
+                    "message": prompt,
+                    "conversation_history": st.session_state.messages[:-1]
+                },
+                stream=True
+            )
 
-                client = sseclient.SSEClient(response)
-                for event in client.events():
-                    full_response += event.data
-                    message_placeholder.markdown(full_response + "▌")
-                
-                message_placeholder.markdown(full_response)
-                
-                # Add assistant response to chat history
-                st.session_state.messages.append(
-                    {"role": "assistant", "content": full_response}
-                )
+            client = sseclient.SSEClient(response)
+            for event in client.events():
+                full_response += event.data
+                message_placeholder.markdown(full_response + "▌")
 
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+            message_placeholder.markdown(full_response)
+
+            # Add assistant response to chat history
+            st.session_state.messages.append(
+                {"role": "assistant", "content": full_response}
+            )
+
+        except Exception as e:
+            st.error(f"Error: {str(e)}")

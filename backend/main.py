@@ -7,6 +7,7 @@ from chat_processor import ChatProcessor
 from document_processor import DocumentProcessor
 from sse_starlette.sse import EventSourceResponse
 import asyncio
+import os
 
 app = FastAPI()
 
@@ -21,13 +22,16 @@ app.add_middleware(
 
 class ChatRequest(BaseModel):
     message: str
-    api_key: str
     conversation_history: Optional[List[dict]] = []
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     try:
-        chat_processor = ChatProcessor(request.api_key)
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise HTTPException(status_code=500, detail="OpenAI API key not found in environment")
+
+        chat_processor = ChatProcessor(api_key)
         doc_processor = DocumentProcessor()
 
         async def generate_response():
