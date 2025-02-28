@@ -1,14 +1,16 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import OpenAIEmbeddings
-from typing import List, Optional
+from typing import List, Optional, Dict
 import tiktoken
+import json
 
 class DocumentProcessor:
     def __init__(self):
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
-            chunk_overlap=200
+            chunk_overlap=200,
+            separators=["\n\n", "\n", " ", ""]
         )
         self.embeddings = OpenAIEmbeddings()
         self.doc_store = None
@@ -16,65 +18,112 @@ class DocumentProcessor:
 
     def initialize_docs(self):
         try:
-            # Initialize with comprehensive CDP documentation samples
+            # Enhanced documentation samples with advanced use cases
             sample_docs = [
                 """Segment Documentation (https://segment.com/docs/?ref=nav):
-                To set up a new source in Segment:
-                1. Log in to your Segment workspace
-                2. Navigate to the Sources section in the left sidebar
-                3. Click 'Add Source' button at the top right
-                4. Search for or select your desired platform/source type
-                5. Follow the source-specific setup instructions
-                6. Configure your source settings and API keys
-                7. Enable the source when ready
-                8. Verify data flow in the Segment debugger""",
+                Advanced Source Configuration:
+                1. Custom Source Setup
+                   - Define custom event schemas
+                   - Configure event transformation rules
+                   - Set up source-specific mappings
+                2. Advanced Data Controls
+                   - Implement data filtering rules
+                   - Configure sampling rates
+                   - Set up privacy controls
+                3. Error Handling and Monitoring
+                   - Configure retry policies
+                   - Set up alerting rules
+                   - Monitor data quality
+                4. Integration Patterns
+                   - Server-side vs client-side
+                   - Mobile SDK implementation
+                   - Cloud source configuration""",
 
                 """mParticle Documentation (https://docs.mparticle.com/):
-                Creating user profiles in mParticle:
-                1. Set up the mParticle SDK in your application
-                2. Implement user identification calls
-                3. Add custom user attributes
-                4. Track user events and behaviors
-                5. Configure identity mapping
-                6. Set up audience rules
-                7. Monitor user profiles in the dashboard""",
+                Advanced Implementation Guide:
+                1. Identity Resolution
+                   - Cross-platform identity mapping
+                   - Custom identity resolution rules
+                   - Identity strategy configuration
+                2. Data Planning
+                   - Schema validation
+                   - Data quality rules
+                   - Version control
+                3. Advanced SDK Features
+                   - Offline data tracking
+                   - Batch vs real-time processing
+                   - Custom attribute handling
+                4. Enterprise Features
+                   - Multi-tenant architecture
+                   - Role-based access control
+                   - Audit logging""",
 
                 """Lytics Documentation (https://docs.lytics.com/):
-                Building audience segments in Lytics:
-                1. Access the Audience Builder section
-                2. Create a new segment
-                3. Define behavioral criteria
-                4. Set up user attributes
-                5. Configure frequency and recency rules
-                6. Test your segment criteria
-                7. Activate the segment for use""",
+                Advanced Segmentation:
+                1. Behavioral Scoring
+                   - Custom scoring models
+                   - Machine learning integration
+                   - Predictive analytics
+                2. Advanced Segment Rules
+                   - Complex boolean logic
+                   - Time-based conditions
+                   - Multi-channel triggers
+                3. Data Science Features
+                   - Custom Python notebooks
+                   - SQL query integration
+                   - API automation
+                4. Enterprise Scale
+                   - High-volume processing
+                   - Custom retention policies
+                   - Advanced security controls""",
 
                 """Zeotap Documentation (https://docs.zeotap.com/home/en-us/):
-                Data integration with Zeotap:
-                1. Access the Data Sources section
-                2. Set up your data source connection
-                3. Configure data mapping rules
-                4. Set up identity resolution
-                5. Validate data quality
-                6. Monitor data ingestion
-                7. Create unified customer profiles"""
+                Enterprise Integration:
+                1. Data Governance
+                   - Compliance frameworks
+                   - Data privacy controls
+                   - Audit trail setup
+                2. Advanced Identity Resolution
+                   - Probabilistic matching
+                   - Custom identity graphs
+                   - Cross-device tracking
+                3. Machine Learning
+                   - Custom model deployment
+                   - Automated segmentation
+                   - Predictive analytics
+                4. Enterprise Features
+                   - Multi-region setup
+                   - Custom API endpoints
+                   - Advanced monitoring"""
             ]
 
             texts = self.text_splitter.split_text("\n".join(sample_docs))
             self.doc_store = FAISS.from_texts(texts, self.embeddings)
-            print("Successfully initialized document store")
+            print("Successfully initialized document store with advanced documentation")
 
         except Exception as e:
             print(f"Error initializing document store: {str(e)}")
             self.doc_store = None
 
-    def get_relevant_docs(self, query: str, k: int = 2) -> Optional[str]:
+    def get_relevant_docs(self, query: str, k: int = 3) -> Optional[str]:
         try:
             if not self.doc_store:
                 return None
 
+            # Search with metadata
             docs = self.doc_store.similarity_search(query, k=k)
-            return "\n".join([doc.page_content for doc in docs])
+
+            # Format the results with section headers
+            formatted_docs = []
+            for doc in docs:
+                content = doc.page_content.strip()
+                if "Documentation" in content:
+                    platform = content.split("Documentation")[0].strip()
+                    formatted_docs.append(f"\n### {platform} Documentation ###\n{content}")
+                else:
+                    formatted_docs.append(content)
+
+            return "\n".join(formatted_docs)
 
         except Exception as e:
             print(f"Error retrieving relevant docs: {str(e)}")
