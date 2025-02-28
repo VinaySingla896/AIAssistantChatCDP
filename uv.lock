@@ -118,6 +118,24 @@ wheels = [
 ]
 
 [[package]]
+name = "anthropic"
+version = "0.48.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "distro" },
+    { name = "httpx" },
+    { name = "jiter" },
+    { name = "pydantic" },
+    { name = "sniffio" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/20/e3/dba5eb132666517178488295305854304794367c4126e8261d2843b540f0/anthropic-0.48.0.tar.gz", hash = "sha256:5e94b571a3874295b6c8600d3797875abdca18946a9ade68b6aa0408caa31cad", size = 209603 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/82/4b/9d2a167bd6c3db8391e0ae2853f94244667c557cc10a6d05898fde2f6ead/anthropic-0.48.0-py3-none-any.whl", hash = "sha256:e2495a07d14484f3219a5c0b902a63f9df8c2b3bd358f68b5ee86f1e89d1ba81", size = 242356 },
+]
+
+[[package]]
 name = "anyio"
 version = "4.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1437,6 +1455,7 @@ name = "repl-nix-workspace"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "anthropic" },
     { name = "faiss-cpu" },
     { name = "fastapi" },
     { name = "langchain" },
@@ -1450,6 +1469,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "anthropic", specifier = ">=0.48.0" },
     { name = "faiss-cpu", specifier = ">=1.10.0" },
     { name = "fastapi", specifier = ">=0.115.9" },
     { name = "langchain", specifier = ">=0.3.19" },

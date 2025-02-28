@@ -5,8 +5,9 @@ import json
 
 class ChatProcessor:
     def __init__(self, api_key: str):
+        # the newest OpenAI model is "gpt-4o-mini" which was released in 2025
         self.chat_model = ChatOpenAI(
-            model="gpt-4",
+            model="gpt-4o-mini",
             openai_api_key=api_key,
             streaming=True,
             temperature=0.7
