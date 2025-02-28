@@ -8,7 +8,12 @@ import os
 st.set_page_config(
     page_title="CDP Support Chatbot",
     page_icon="💬",
-    layout="wide"
+    layout="wide",
+    menu_items={
+        'About': None,
+        'Report a bug': None,
+        'Get help': None
+    }
 )
 
 # Load custom CSS
