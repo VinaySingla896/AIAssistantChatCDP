@@ -2,6 +2,7 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from typing import List, Dict, AsyncGenerator
 import json
+import asyncio
 
 class ChatProcessor:
     def __init__(self, api_key: str):
@@ -25,25 +26,31 @@ class ChatProcessor:
         conversation_history: List[Dict],
         doc_processor
     ) -> AsyncGenerator[str, None]:
-        messages = [SystemMessage(content=self._create_system_prompt())]
+        try:
+            messages = [SystemMessage(content=self._create_system_prompt())]
 
-        # Add conversation history
-        for msg in conversation_history:
-            if msg["role"] == "user":
-                messages.append(HumanMessage(content=msg["content"]))
-            else:
-                messages.append(SystemMessage(content=msg["content"]))
+            # Add conversation history
+            for msg in conversation_history:
+                if msg["role"] == "user":
+                    messages.append(HumanMessage(content=msg["content"]))
+                else:
+                    messages.append(SystemMessage(content=msg["content"]))
 
-        # Add current message
-        messages.append(HumanMessage(content=user_message))
+            # Add current message
+            messages.append(HumanMessage(content=user_message))
 
-        # Get relevant documentation context
-        context = doc_processor.get_relevant_docs(user_message)
-        if context:
-            messages.append(SystemMessage(content=f"Relevant documentation: {context}"))
+            # Get relevant documentation context
+            context = doc_processor.get_relevant_docs(user_message)
+            if context:
+                messages.append(SystemMessage(content=f"Relevant documentation: {context}"))
 
-        response = await self.chat_model.agenerate([messages])
+            # Generate streaming response
+            async for chunk in await self.chat_model.astream(messages):
+                if hasattr(chunk, 'content') and chunk.content:
+                    yield chunk.content
+                elif isinstance(chunk, str):
+                    yield chunk
 
-        async for chunk in response.chunks:
-            if chunk.content:
-                yield chunk.content
+        except Exception as e:
+            print(f"Error in chat processing: {str(e)}")
+            yield f"I apologize, but I encountered an error: {str(e)}"
