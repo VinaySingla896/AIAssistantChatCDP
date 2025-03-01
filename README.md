@@ -21,25 +21,43 @@ A powerful chatbot designed to assist users with questions about popular Custome
 ## Setup
 
 1. Clone the repository
-2. Install dependencies:
+2. Navigate to backend
+```bash
+cd backend
+```
+3. create and activate a virtual env
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-3. Set up environment variables:
+4. Set up environment variables:
 ```bash
 export OPENAI_API_KEY='your-api-key'
 ```
-
-## Running the Application
-
-1. Start the backend server:
+5. Start the backend server:
 ```bash
 python backend/main.py
 ```
-
-2. Start the frontend application:
+6. Open another termial and navigate to frontend
 ```bash
-streamlit run frontend/app.py
+cd frontend
+```
+7. create and activate a virtual env
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
+8. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+9. Start the frontend server:
+```bash
+streamlit run app.py
 ```
 
 The application will be available at http://localhost:5000
