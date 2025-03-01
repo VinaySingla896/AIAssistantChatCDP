@@ -16,7 +16,7 @@ st.set_page_config(
     }
 )
 load_dotenv()
-backend_url = os.getenv("BACKEND_URL")
+backend_url = st.secrets["BACKEND_URL"] or "http://localhost:8000"
 
 # Change working directory to 'frontend'
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
