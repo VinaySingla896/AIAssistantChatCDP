@@ -19,7 +19,7 @@ load_dotenv()
 backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 # Load custom CSS
-with open("frontend/styles.css") as f:
+with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 def initialize_session_state():
