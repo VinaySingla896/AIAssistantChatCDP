@@ -18,6 +18,8 @@ st.set_page_config(
 load_dotenv()
 backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
 
+# Change working directory to 'frontend'
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # Load custom CSS
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
