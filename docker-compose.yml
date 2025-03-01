@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      context: ./backend  # Build from backend folder
+      dockerfile: Dockerfile
+    container_name: fastapi-backend
+    ports:
+      - "${PORT:-8000}:8000"
+    env_file:
+      - backend/.env  # Load environment variables
+    environment:
+      - PORT=${PORT:-8000}
+    restart: always  # Ensures it doesn't sleep on inactivity
