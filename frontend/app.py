@@ -4,7 +4,7 @@ import json
 import sseclient
 import time
 import os
-
+from dotenv import load_dotenv
 st.set_page_config(
     page_title="CDP Support Chatbot",
     page_icon="💬",
@@ -15,6 +15,8 @@ st.set_page_config(
         'About': None
     }
 )
+load_dotenv()
+backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 # Load custom CSS
 with open("frontend/styles.css") as f:
@@ -52,7 +54,7 @@ if prompt := st.chat_input("Type your question here..."):
         try:
             # Send request to backend
             response = requests.post(
-                "http://localhost:8000/chat",
+                f"{backend_url}/chat",
                 json={
                     "message": prompt,
                     "conversation_history": st.session_state.messages[:-1]
@@ -74,3 +76,6 @@ if prompt := st.chat_input("Type your question here..."):
 
         except Exception as e:
             st.error(f"Error: {str(e)}")
+            
+if __name__ == "__main__":
+    os.system("streamlit run app.py --server.port=5000 --server.address=0.0.0.0 --server.headless=true")
