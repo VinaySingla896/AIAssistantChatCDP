@@ -27,8 +27,8 @@ cd backend
 ```
 3. create and activate a virtual env
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+python -m venv backend_venv
+source backend_venv/bin/activate  # On Windows use `backend_venv\Scripts\activate`
 ```
 3. Install dependencies:
 ```bash
@@ -48,8 +48,8 @@ cd frontend
 ```
 7. create and activate a virtual env
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+python -m venv frontend_venv
+source frontend_venv/bin/activate  # On Windows use `frontend_venv\Scripts\activate`
 ```
 8. Install dependencies:
 ```bash
