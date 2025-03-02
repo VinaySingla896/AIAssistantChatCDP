@@ -40,7 +40,7 @@ export OPENAI_API_KEY='your-api-key'
 ```
 5. Start the backend server:
 ```bash
-python backend/main.py
+python main.py
 ```
 6. Open another termial and navigate to frontend
 ```bash
